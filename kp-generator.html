@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Генератор КП — коммерческое предложение за пару минут</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #fafafa; }
+  .card-shadow { box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 12px 32px -12px rgba(15,23,42,.14); }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .anim-fade { animation: fadeInUp .5s cubic-bezier(.16,1,.3,1) both; }
+
+  /* Поля формы */
+  .field {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #1f2937;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field::placeholder { color: #9ca3af; }
+  .field:focus {
+    outline: none;
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(139,92,246,.16);
+  }
+  select.field { appearance: none; -webkit-appearance: none; padding-right: 36px; }
+  .lbl { display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 6px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .anim-fade { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body class="font-sans text-gray-800 antialiased min-h-screen">
+
+  <!-- Шапка -->
+  <header class="max-w-6xl mx-auto px-5 sm:px-6 pt-8 flex items-center gap-3.5">
+    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-violet-700 flex items-center justify-center shadow-lg shadow-violet-500/30 shrink-0" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <path d="M14 2v6h6"/>
+        <path d="M9 13h6M9 17h4"/>
+      </svg>
+    </div>
+    <div>
+      <h1 class="text-lg font-extrabold leading-tight text-gray-800">Генератор КП</h1>
+      <p class="text-[13px] text-gray-500">Коммерческое предложение — за минуту</p>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-5 sm:px-6 py-8 grid gap-8 lg:grid-cols-2 items-start">
+
+    <!-- ============ ЛЕВАЯ ЧАСТЬ: ФОРМА ============ -->
+    <section class="bg-white card-shadow rounded-xl p-6 sm:p-7">
+      <h2 class="text-[15px] font-bold text-gray-800">Данные для КП</h2>
+      <p class="text-[13px] text-gray-400 mt-0.5">Заполните поля и нажмите «Сгенерировать» — документ справа обновится</p>
+
+      <form id="kpForm" class="mt-6 space-y-4" novalidate>
+        <div>
+          <label class="lbl" for="clientName">Имя клиента</label>
+          <input class="field" type="text" id="clientName" placeholder="Например: Алексей Смирнов" />
+        </div>
+
+        <div>
+          <label class="lbl" for="clientCompany">Название компании клиента</label>
+          <input class="field" type="text" id="clientCompany" placeholder="Например: ООО «СтройГрад»" />
+        </div>
+
+        <div>
+          <label class="lbl" for="serviceName">Название услуги / проекта</label>
+          <input class="field" type="text" id="serviceName" placeholder="Например: Разработка сайта-визитки" />
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label class="lbl" for="deadline">Срок выполнения</label>
+            <div class="relative">
+              <select class="field" id="deadline">
+                <option value="1 неделя">1 неделя</option>
+                <option value="2 недели">2 недели</option>
+                <option value="1 месяц">1 месяц</option>
+                <option value="2 месяца">2 месяца</option>
+              </select>
+              <svg class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+          <div>
+            <label class="lbl" for="price">Стоимость, ₽</label>
+            <div class="relative">
+              <input class="field" type="number" id="price" min="0" step="1000" inputmode="numeric" placeholder="45 000" />
+              <span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none select-none">₽</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="lbl" for="description">Описание услуги</label>
+          <textarea class="field resize-none leading-relaxed" id="description" rows="4" placeholder="Что входит в работу, какие задачи решает проект…"></textarea>
+        </div>
+
+        <button type="submit"
+          class="w-full mt-2 py-3.5 rounded-xl bg-violet-500 hover:bg-violet-600 active:scale-[.985] text-white text-[15px] font-semibold flex items-center justify-center gap-2 shadow-lg shadow-violet-500/30 transition">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/>
+          </svg>
+          Сгенерировать КП
+        </button>
+      </form>
+    </section>
+
+    <!-- ============ ПРАВАЯ ЧАСТЬ: ПРЕВЬЮ КП ============ -->
+    <section id="previewSection" class="scroll-mt-6">
+      <div class="flex items-center justify-between gap-3 mb-3">
+        <h2 class="text-[15px] font-bold text-gray-800">Превью КП</h2>
+        <button id="copyBtn" type="button"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-gray-200 text-[13px] font-medium text-gray-600 hover:text-violet-600 hover:border-violet-300 transition active:scale-[.97]">
+          <svg id="copyIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          <span id="copyLabel">Скопировать текст</span>
+        </button>
+      </div>
+
+      <!-- Документ -->
+      <article id="previewDoc" class="bg-white card-shadow rounded-xl overflow-hidden anim-fade">
+        <div class="h-1.5 bg-gradient-to-r from-violet-500 to-violet-400" aria-hidden="true"></div>
+        <div class="p-6 sm:p-8">
+
+          <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-1">
+            <h3 class="text-[22px] sm:text-2xl font-extrabold text-gray-800 leading-tight">Коммерческое предложение</h3>
+            <p id="previewDate" class="text-[13px] text-gray-400 shrink-0 sm:pb-0.5"></p>
+          </div>
+
+          <div class="h-px bg-gray-100 my-5" aria-hidden="true"></div>
+
+          <p id="previewGreeting" class="text-[15px] font-bold text-gray-800"></p>
+
+          <div id="previewBody" class="mt-3 space-y-3 text-[15px] leading-relaxed text-gray-600"></div>
+
+          <!-- Блок с ценой и сроком -->
+          <div class="mt-5 rounded-xl border border-violet-100 bg-gradient-to-br from-violet-50 to-white p-4 grid grid-cols-2 gap-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-wider text-gray-400 font-semibold">Стоимость</p>
+              <p id="summaryPrice" class="mt-1 text-lg sm:text-xl font-extrabold text-violet-600 tabular-nums"></p>
+            </div>
+            <div>
+              <p class="text-[11px] uppercase tracking-wider text-gray-400 font-semibold">Срок выполнения</p>
+              <p id="summaryDeadline" class="mt-1 text-lg sm:text-xl font-extrabold text-gray-800"></p>
+            </div>
+          </div>
+
+          <!-- Призыв к действию -->
+          <p class="mt-5 text-[15px] leading-relaxed text-gray-700">
+            Буду рад обсудить детали и ответить на все вопросы — напишите мне, и мы согласуем удобный формат сотрудничества.
+          </p>
+
+          <div class="mt-7 text-right">
+            <p class="text-[14px] text-gray-500">С уважением,</p>
+            <p class="text-[14px] font-semibold text-violet-500 italic">[Ваше имя]</p>
+          </div>
+
+        </div>
+      </article>
+
+      <p class="mt-3 text-xs text-gray-400 text-center sm:text-left">Подпись и контакты — замените на свои прямо в тексте КП.</p>
+    </section>
+  </main>
+
+  <footer class="max-w-6xl mx-auto px-6 pb-10 text-center text-xs text-gray-400">
+    Генератор КП · мок-данные уже в форме — просто замените на свои
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+    });
+  };
+
+  /* ---------- Мок-данные по умолчанию ---------- */
+  var MOCK = {
+    clientName: 'Алексей Смирнов',
+    clientCompany: 'ООО «СтройГрад»',
+    serviceName: 'Разработка сайта-визитки',
+    deadline: '1 месяц',
+    price: 45000,
+    description: 'Создание современного адаптивного сайта-визитки с формой обратной связи, базовой SEO-оптимизацией и подключением аналитики. Включает настройку домена и хостинга, а также короткое обучение по управлению сайтом.'
+  };
+
+  var CTA = 'Буду рад обсудить детали и ответить на все вопросы — напишите мне, и мы согласуем удобный формат сотрудничества.';
+
+  /* ---------- Сбор данных из формы ---------- */
+  function collect() {
+    return {
+      clientName: $('clientName').value.trim(),
+      clientCompany: $('clientCompany').value.trim(),
+      serviceName: $('serviceName').value.trim(),
+      deadline: $('deadline').value,
+      price: parseFloat($('price').value) || 0,
+      description: $('description').value.trim()
+    };
+  }
+
+  function fmtPrice(n) {
+    return n ? new Intl.NumberFormat('ru-RU').format(n) : null;
+  }
+
+  function todayRu() {
+    return new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  /* ---------- Текст тела КП (используется и в DOM, и для копирования) ---------- */
+  function bodyParagraphs(d) {
+    var p = [];
+    var company = d.clientCompany ? 'компании ' + esc(d.clientCompany) : 'вашей компании';
+
+    p.push('Предлагаю вашему вниманию услугу <span class="font-semibold text-gray-900">' + esc(d.serviceName) +
+      '</span> — решение, которое поможет ' + company +
+      ' привлекать больше клиентов и выглядеть уверенно и профессионально.');
+
+    if (d.description) p.push(esc(d.description));
+
+    p.push('Я подхожу к работе с полной ответственностью: держу вас в курсе на каждом этапе, оперативно отвечаю на вопросы ' +
+      'и гарантирую результат, который полностью соответствует заявленной задаче (срок — ' + esc(d.deadline) + '). ' +
+      'Приступаю к работе сразу после согласования деталей.');
+
+    return p;
+  }
+
+  /* ---------- Рендер превью ---------- */
+  function render() {
+    var d = collect();
+
+    $('previewDate').textContent = todayRu();
+    $('previewGreeting').textContent = 'Уважаемый ' + (d.clientName || '…') + '!';
+    $('previewBody').innerHTML = bodyParagraphs(d).map(function (p) { return '<p>' + p + '</p>'; }).join('');
+
+    $('summaryPrice').textContent = d.price ? fmtPrice(d.price) + ' ₽' : '—';
+    $('summaryDeadline').textContent = d.deadline;
+
+    // Перезапуск fade-in анимации
+    var doc = $('previewDoc');
+    doc.classList.remove('anim-fade');
+    void doc.offsetWidth;
+    doc.classList.add('anim-fade');
+  }
+
+  /* ---------- Текст для буфера обмена ---------- */
+  function buildCopyText() {
+    var d = collect();
+    var lines = [];
+    lines.push('Коммерческое предложение');
+    lines.push(todayRu());
+    lines.push('');
+    lines.push('Уважаемый ' + (d.clientName || '…') + '!');
+    lines.push('');
+    bodyParagraphs(d).forEach(function (p) { lines.push(p.replace(/<[^>]+>/g, '')); });
+    lines.push('');
+    lines.push('Стоимость: ' + (d.price ? fmtPrice(d.price) + ' ₽' : '—'));
+    lines.push('Срок выполнения: ' + d.deadline);
+    lines.push('');
+    lines.push(CTA);
+    lines.push('');
+    lines.push('С уважением,');
+    lines.push('[Ваше имя]');
+    return lines.join('\n');
+  }
+
+  /* ---------- Копирование в буфер: clipboard API -> execCommand (двухступенчато) ---------- */
+  function legacyCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    ta.style.pointerEvents = 'none';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove();
+    return ok;
+  }
+
+  function copyToClipboard(text) {
+    // Сначала пробуем современный API; при отказе (нет разрешения/нет фокуса) — legacy fallback
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(
+        function () { return; },
+        function () {
+          if (legacyCopy(text)) return Promise.resolve();
+          return Promise.reject(new Error('copy failed'));
+        }
+      );
+    }
+    if (legacyCopy(text)) return Promise.resolve();
+    return Promise.reject(new Error('copy failed'));
+  }
+
+  var copyResetTimer = null;
+  function onCopy() {
+    copyToClipboard(buildCopyText()).then(function () {
+      $('copyLabel').textContent = 'Скопировано';
+      $('copyBtn').classList.add('text-emerald-600', 'border-emerald-300');
+      $('copyIcon').innerHTML = '<path d="M20 6 9 17l-5-5"/>';
+      clearTimeout(copyResetTimer);
+      copyResetTimer = setTimeout(function () {
+        $('copyLabel').textContent = 'Скопировать текст';
+        $('copyBtn').classList.remove('text-emerald-600', 'border-emerald-300');
+        $('copyIcon').innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>';
+      }, 1800);
+    }).catch(function () {
+      $('copyLabel').textContent = 'Не удалось скопировать';
+      setTimeout(function () { $('copyLabel').textContent = 'Скопировать текст'; }, 1800);
+    });
+  }
+
+  /* ---------- Инициализация ---------- */
+  function init() {
+    $('clientName').value = MOCK.clientName;
+    $('clientCompany').value = MOCK.clientCompany;
+    $('serviceName').value = MOCK.serviceName;
+    $('deadline').value = MOCK.deadline;
+    $('price').value = MOCK.price;
+    $('description').value = MOCK.description;
+
+    $('kpForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      render();
+      if (window.innerWidth < 1024) {
+        $('previewSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    $('copyBtn').addEventListener('click', onCopy);
+
+    render(); // превью заполнено мок-данными сразу при загрузке
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
